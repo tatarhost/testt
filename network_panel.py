@@ -184,24 +184,28 @@ class NetworkPanel:
         self.poll_thread.start()
 
     def _poll_loop(self, token, chat_id):
+        # Read the group's message history as an administrator. This also sees
+        # messages sent by the bot itself, unlike relying only on update events.
+        seen = set()
         while not self.stop_event.is_set():
             try:
-                params = {"timeout": 25, "limit": 100,
-                          "types": "message_created"}
-                if self.marker is not None:
-                    params["marker"] = self.marker
-                data = api_request(token, "/updates", params=params, timeout=35)
-                self.marker = data.get("marker", self.marker)
-                for update in data.get("updates", []):
-                    if update_chat_id(update) not in ("", chat_id):
+                data = api_request(token, "/messages",
+                                   params={"chat_id": chat_id, "count": 100},
+                                   timeout=20)
+                messages = data.get("messages", [])
+                for message in reversed(messages):
+                    message_id = str(message.get("body", {}).get("mid") or message.get("mid") or message.get("id") or "")
+                    if not message_id or message_id in seen:
                         continue
-                    text = update_text(update).strip()
-                    if not text.startswith("MCH2|"):
-                        continue
-                    self._handle_signal(text)
+                    seen.add(message_id)
+                    text = update_text({"message": message}).strip()
+                    if text.startswith("MCH2|"):
+                        self._handle_signal(text)
+                if len(seen) > 2000:
+                    seen = set(list(seen)[-500:])
             except Exception as exc:
-                self.say("MAX polling: " + str(exc))
-                self.stop_event.wait(5)
+                self.say("MAX messages: " + str(exc))
+            self.stop_event.wait(5)
 
     def _handle_signal(self, text):
         parts = text.split("|")
