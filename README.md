@@ -1,21 +1,25 @@
-# Minecraft MAX Host (NeoForge)
+# Minecraft MAX Host — Windows portable package
 
-Windows desktop panel for an already-installed Minecraft Java NeoForge server.
+## Start
+1. Extract the ZIP to any folder.
+2. Run `MinecraftMAXHost.exe`. Python does not need to be installed.
+3. Open **Minecraft auto-detect** and click **Scan Minecraft folders**.
+4. The app checks common locations for the official Minecraft launcher, Prism Launcher, MultiMC, Modrinth, CurseForge, GDLauncher and ATLauncher. Select an instance to inspect its `mods` folder.
+5. Click **Auto-detect servers** to search common Desktop / Downloads / Documents / Minecraft / Servers folders for `run.bat` or `start.bat`. If your server is elsewhere, click **Choose server**.
+6. Start and stop the server from the top controls. The app reads server console events and server status.
 
-## Build
-Push to `main` or run **Build Windows EXE** in GitHub Actions. The workflow builds a one-file `MinecraftMAXHost.exe` and uploads it as an artifact.
+## What is included
+- One-file Windows executable.
+- Automatic detection of common Minecraft Java folders and launcher instances.
+- Client and server mod JAR inventory (metadata where available).
+- NeoForge/Forge server start/stop using its existing `run.bat` or `start.bat`.
+- Local server status query, console and join/leave events.
+- MAX group shortcut.
 
-## Setup
-1. Install NeoForge server with the official installer.
-2. Run its `run.bat` once. Review Minecraft's EULA and set `eula=true` yourself only if you agree.
-3. Start the app, select the server root folder (the one containing `run.bat`), then Start.
-4. In MAX tab set your group URL and open it in your browser. Sign in manually.
-
-## Features
-- Start/stop server through console, log viewer, join/leave log events.
-- Reads server.properties and scans mods/*.jar metadata.
-- Queries Minecraft Java status for online/max, version and advertised sample.
-- Opens the configured MAX group.
-
-## Limits
-This is a self-hosted PC manager, not cloud hosting; PC must stay on. External access needs router/firewall configuration. Server status may not publish full player names. Mods installed on remote players cannot be read. MAX personal-account message automation is not included; this app does not access passwords, QR codes, or browser session data.
+## Important
+- This is a local PC server manager, not cloud hosting. The PC must remain on while hosting.
+- The app does not install Minecraft, Java, NeoForge or mods. It detects existing folders and uses the server's own launch script.
+- Before starting, read the Minecraft EULA and set `eula=true` yourself only if you agree.
+- The server folder must contain a working `run.bat` or `start.bat`.
+- MAX opens the group in your browser. It does not access MAX accounts, scrape members, or send messages automatically.
+- Player names in the status view are only those advertised by the server; join/leave events are read from this app's console session.
