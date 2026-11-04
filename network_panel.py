@@ -176,12 +176,14 @@ class NetworkPanel:
         if self.poll_thread and self.poll_thread.is_alive():
             return
         self.stop_event.clear()
-        self.poll_thread = threading.Thread(target=self._poll_loop, daemon=True)
-        self.poll_thread.start()
-
-    def _poll_loop(self):
         token = self.token.get().strip()
         chat_id = self.chat.get().strip()
+        self.poll_thread = threading.Thread(
+            target=self._poll_loop, args=(token, chat_id), daemon=True
+        )
+        self.poll_thread.start()
+
+    def _poll_loop(self, token, chat_id):
         while not self.stop_event.is_set():
             try:
                 params = {"timeout": 25, "limit": 100,
