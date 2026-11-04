@@ -9,6 +9,7 @@ import webbrowser
 import zipfile
 from pathlib import Path
 import tkinter as tk
+from network_panel import NetworkPanel
 from tkinter import ttk, filedialog, messagebox
 
 APP_NAME = "Minecraft MAX Host"
@@ -254,6 +255,7 @@ class Host:
         ttk.Button(controls, text="▶ START SERVER", command=self.start).pack(side="left")
         ttk.Button(controls, text="■ STOP", command=self.stop).pack(side="left", padx=8)
         ttk.Button(controls, text="Refresh", command=self._refresh_server).pack(side="left")
+        ttk.Button(controls, text="HOST / PLAYER", command=self.open_network).pack(side="left", padx=8)
 
         tabs = ttk.Notebook(base)
         tabs.pack(fill="both", expand=True)
@@ -310,6 +312,9 @@ class Host:
             text="MAX opens in your browser. Sign in there yourself. This app does not read private account data or automate messages.",
             wraplength=900
         ).pack(anchor="w", pady=12)
+
+    def open_network(self):
+        NetworkPanel(self.root, self.folder, self.write)
 
     def save(self):
         cfg_write({
