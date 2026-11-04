@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build Windows portable ZIP
 on:
   push:
     branches: [main]
@@ -13,11 +13,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r requirements.txt
-      - run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name MinecraftMAXHost app.py
+      - name: Install build dependency
+        run: python -m pip install pyinstaller==6.16.0
+      - name: Build standalone EXE
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name MinecraftMAXHost app.py
+      - name: Assemble portable package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package | Out-Null
+          Copy-Item dist/MinecraftMAXHost.exe package/
+          Copy-Item README.md package/README.txt
+          Set-Content package/START-HERE.txt "Extract this ZIP, then run MinecraftMAXHost.exe. No Python installation required."
+          Compress-Archive -Path package/* -DestinationPath MinecraftMAXHost-Portable-Windows.zip -Force
       - uses: actions/upload-artifact@v4
         with:
-          name: MinecraftMAXHost-Windows
-          path: dist/MinecraftMAXHost.exe
+          name: MinecraftMAXHost-Portable-Windows
+          path: MinecraftMAXHost-Portable-Windows.zip
           if-no-files-found: error
           retention-days: 30
