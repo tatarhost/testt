@@ -16,12 +16,12 @@ Both computers run this app and use the same MAX bot token and group chat ID.
 5. The player enters the six-digit room code and sends a join request. The host sees the request in the events log. The player receives the host address and enters it in Minecraft's Direct Connection screen.
 
 ## Important limitations
-- This build uses MAX Bot API Long Polling, which MAX documents for development/testing only, not production. It is a prototype signaling transport; reliable production use needs a public HTTPS webhook service.
+- The app reads group messages using MAX Bot API GET /messages. The bot must be a group administrator with read_all_messages and write permissions.
 - MAX only carries room announcements and join requests. It does not carry Minecraft gameplay traffic and does not create an internet tunnel.
 - For remote play, the host address and port must already be reachable from the other computer (for example, both players may use the same trusted private VPN network). This app does not configure routers, open firewall ports, or provide a relay.
 - Do not post a public IP address in a group with people you do not trust. Share room codes only with invited players.
 - The bot token is saved locally in %APPDATA%\MinecraftMAXHost\network.json. Keep it private; anyone with it can control the bot.
-- Both computers should use the same MAX bot and group. MAX bot must be an administrator with permission to read all messages; group events may otherwise not arrive.
+- MAX API access and bot permissions are controlled by MAX. If the group messages do not arrive, check that the bot is an administrator and has the required permissions.
 
 ## Minecraft discovery and server management
 - Detects common Minecraft Java and launcher folders, and inventories client/server mod JARs.
